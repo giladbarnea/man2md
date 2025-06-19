@@ -1,0 +1,529 @@
+title = "FSCK_HFS"
+name  = "fsck_hfs"
+sec   = "8"
+vol   = "System Manager's Manual"
+os    = "Mac OS X"
+date  = "October 27, 2020"
+
+ Copyright (c) 2002,2008 Apple Inc. All rights reserved. (comment) 1:3
+ (comment) 2:3
+ The contents of this file constitute Original Code as defined in and (comment) 3:3
+ are subject to the Apple Public Source License Version 1.1 (the (comment) 4:3
+ "License").  You may not use this file except in compliance with the (comment) 5:3
+ License.  Please obtain a copy of the License at (comment) 6:3
+ http://www.apple.com/publicsource and read it before using this file. (comment) 7:3
+ (comment) 8:3
+ This Original Code and all software distributed under the License are (comment) 9:3
+ distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, EITHER (comment) 10:3
+ EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES, (comment) 11:3
+ INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY, (comment) 12:3
+ FITNESS FOR A PARTICULAR PURPOSE OR NON-INFRINGEMENT.  Please see the (comment) 13:3
+ License for the specific language governing rights and limitations (comment) 14:3
+ under the License. (comment) 15:3
+ (comment) 16:3
+     @(#)fsck_hfs.8 (comment) 17:3
+Dd (elem) *18:2 NOPRT
+    October 27, 2020 (text) 18:5
+Dt (elem) *19:2 NOPRT
+    FSCK_HFS (text) 19:5
+    8 (text) 19:14
+Os (elem) *20:2 NOPRT
+    Mac OS X (text) 20:5
+Sh (block) *21:2
+  Sh (head) 21:2 ID=HREF
+      NAME (text) 21:5
+  Sh (body) 21:2
+      Nm (elem) *22:2
+          fsck_hfs (text) 22:5
+      Nd (block) *23:2
+        Nd (head) 23:2
+        Nd (body) 23:2
+            HFS file system consistency check (text) 23:5
+Sh (block) *24:2
+  Sh (head) 24:2 ID=HREF
+      SYNOPSIS (text) 24:5
+  Sh (body) 24:2
+      Nm (block) *25:2
+        Nm (head) 25:2
+            fsck_hfs (text) 25:5
+        Nm (body) 25:2
+            Fl (elem) *26:2
+                q (text) 26:5
+            Op (block) *27:2
+              Op (head) 27:2
+              Op (body) 27:2
+                  Fl (elem) 27:5
+                      df (text) 27:8
+            Ar (elem) *28:2
+                special (text) 28:5
+                ... (text) 28:13
+      Nm (block) *29:2
+        Nm (head) 29:2
+            fsck_hfs (text) 29:5
+        Nm (body) 29:2
+            Fl (elem) *30:2
+                p (text) 30:5
+            Op (block) *31:2
+              Op (head) 31:2
+              Op (body) 31:2
+                  Fl (elem) 31:5
+                      df (text) 31:8
+            Ar (elem) *32:2
+                special (text) 32:5
+                ... (text) 32:13
+      Nm (block) *33:2
+        Nm (head) 33:2
+            fsck_hfs (text) 33:5
+        Nm (body) 33:2
+            Op (block) *34:2
+              Op (head) 34:2
+              Op (body) 34:2
+                  Fl (elem) 34:5
+                      n (text) 34:8
+                  | (text) 34:10
+                  Fl (elem) 34:5
+                      y (text) 34:12
+                  | (text) 34:14
+                  Fl (elem) 34:5
+                      r (text) 34:16
+            Op (block) *35:2
+              Op (head) 35:2
+              Op (body) 35:2
+                  Fl (elem) 35:5
+                      dfgxlES (text) 35:8
+            Op (block) *36:2
+              Op (head) 36:2
+              Op (body) 36:2
+                  Fl (elem) 36:5
+                      D (text) 36:8
+                  Ar (elem) 36:10
+                      flags (text) 36:13
+            Op (block) *37:2
+              Op (head) 37:2
+              Op (body) 37:2
+                  Fl (elem) 37:5
+                      b (text) 37:8
+                  Ar (elem) 37:10
+                      size (text) 37:13
+            Op (block) *38:2
+              Op (head) 38:2
+              Op (body) 38:2
+                  Fl (elem) 38:5
+                      B (text) 38:8
+                  Ar (elem) 38:10
+                      path (text) 38:13
+            Op (block) *39:2
+              Op (head) 39:2
+              Op (body) 39:2
+                  Fl (elem) 39:5
+                      m (text) 39:8
+                  Ar (elem) 39:10
+                      mode (text) 39:13
+            Op (block) *40:2
+              Op (head) 40:2
+              Op (body) 40:2
+                  Fl (elem) 40:5
+                      c (text) 40:8
+                  Ar (elem) 40:10
+                      size (text) 40:13
+            Op (block) *41:2
+              Op (head) 41:2
+              Op (body) 41:2
+                  Fl (elem) 41:5
+                      R (text) 41:8
+                  Ar (elem) 41:10
+                      flags (text) 41:13
+            Ar (elem) *42:2
+                special (text) 42:5
+                ... (text) 42:13
+Sh (block) *43:2
+  Sh (head) 43:2 ID=HREF
+      DESCRIPTION (text) 43:5
+  Sh (body) 43:2
+      The (text) *45:1
+      Nm (elem) *46:2
+          fsck_hfs (text) 46:2 NOSRC
+      utility verifies and repairs HFS+ file systems. (text) *47:1.
+      Pp (elem) *48:2
+      The first form of (text) *49:1
+      Nm (elem) *50:2
+          fsck_hfs (text) 50:2 NOSRC
+      quickly checks the specified file systems to determine whether (text) *51:1
+      they were cleanly unmounted. (text) *52:1.
+      Pp (elem) *53:2
+      The second form of (text) *54:1
+      Nm (elem) *55:2
+          fsck_hfs (text) 55:2 NOSRC
+      preens the specified file systems. (text) *56:1.
+      It is normally started by (text) *57:1
+      Xr (elem) *58:2
+          fsck (text) 58:5
+          8 (text) 58:10
+      run from (text) *59:1
+      Pa (elem) *60:2
+          /etc/rc.boot (text) 60:5
+      during automatic reboot, when a HFS file system is detected. (text) *61:1.
+      When preening file systems, (text) *62:1
+      Nm (elem) *63:2
+          fsck_hfs (text) 63:2 NOSRC
+      will fix common inconsistencies for file systems that were not (text) *64:1
+      unmounted cleanly. (text) *65:1.
+      If more serious problems are found, (text) *66:1
+      Nm (elem) *67:2
+          fsck_hfs (text) 67:2 NOSRC
+      does not try to fix them, indicates that it was not (text) *68:1
+      successful, and exits. (text) *69:1.
+      Pp (elem) *70:2
+      The third form of (text) *71:1
+      Nm (elem) *72:2
+          fsck_hfs (text) 72:2 NOSRC
+      checks the specified file systems and tries to repair all (text) *73:1
+      detected inconsistencies. (text) *74:1.
+      Pp (elem) *75:2
+      If no options are specified (text) *76:1
+      Nm (elem) *77:2
+          fsck_hfs (text) 77:2 NOSRC
+      will always check and attempt to fix the specified file systems. (text) *78:1.
+      Pp (elem) *79:2
+      The options are as follows: (text) *80:1
+      Bl (block) -hang -offset [ [indent] ] *81:2
+        Bl (head) 81:2
+        Bl (body) 81:2
+            It (block) *82:2
+              It (head) 82:2 ID=c
+                  Fl (elem) 82:5 HREF
+                      c (text) 82:8
+                  Ar (elem) 82:10
+                      size (text) 82:13
+              It (body) 82:2
+                  Specify the (text) *83:1
+                  Ar (elem) *84:2
+                      size (text) 84:5
+                  of the cache used by (text) *85:1
+                  Nm (elem) *86:2
+                      fsck_hfs (text) 86:2 NOSRC
+                  internally.  Bigger (text) *87:1
+                  Ar (elem) *88:2
+                      size (text) 88:5
+                  can result in better performance but can result in deadlock when (text) *89:1
+                  used with (text) *90:1
+                  Fl (elem) *91:2
+                      l (text) 91:5
+                  option.  Size can be specified as a decimal, octal, or (text) *92:1
+                  hexadecimal number.  If the number ends with a ``k'', ``m'', (text) *93:1
+                  or ``g'', the number is multiplied by 1024 (1K), 1048576 (1M), (text) *94:1
+                  or 1073741824 (1G), respectively. (text) *95:1.
+            It (block) *96:2
+              It (head) 96:2 ID=d
+                  Fl (elem) 96:5 HREF
+                      d (text) 96:8
+              It (body) 96:2
+                  Display debugging information. (text) *97:1.
+                  This option may provide useful information when (text) *98:1
+                  Nm (elem) *99:2
+                      fsck_hfs (text) 99:2 NOSRC
+                  cannot repair a damaged file system. (text) *100:1.
+            It (block) *101:2
+              It (head) 101:2 ID=D
+                  Fl (elem) 101:5 HREF
+                      D (text) 101:8
+                  Ar (elem) 101:10
+                      flags (text) 101:13
+              It (body) 101:2
+                  Print extra debugging information.  The (text) *102:1
+                  Ar (elem) *103:2
+                      flags (text) 103:5
+                  are a bitmap that control which kind of debug information is printed. (text) *104:1.
+                  The following values are currently implemented: (text) *105:1
+                  Bl (block) -hang -offset [ [indent] ] -compact *106:2
+                    Bl (head) 106:2
+                    Bl (body) 106:2
+                        It (block) *107:2
+                          It (head) 107:2
+                              0x0001 (text) 107:5
+                          It (body) 107:2
+                              Informational messages (text) *108:1
+                        It (block) *109:2
+                          It (head) 109:2
+                              0x0002 (text) 109:5
+                          It (body) 109:2
+                              Error messages (text) *110:1
+                        It (block) *111:2
+                          It (head) 111:2
+                              0x0010 (text) 111:5
+                          It (body) 111:2
+                              Extended attributes related messages (text) *112:1
+                        It (block) *113:2
+                          It (head) 113:2
+                              0x0020 (text) 113:5
+                          It (body) 113:2
+                              Overlapped extents related messages (text) *114:1
+            It (block) *116:2
+              It (head) 116:2 ID=b
+                  Fl (elem) 116:5 HREF
+                      b (text) 116:8
+                  Ar (elem) 116:10
+                      size (text) 116:13
+              It (body) 116:2
+                  Specify the size, in bytes, of the physical blocks used by the (text) *117:1
+                  Fl (elem) *118:2
+                      B (text) 118:5
+                  option. (text) *119:1.
+            It (block) *120:2
+              It (head) 120:2 ID=B
+                  Fl (elem) 120:5 HREF
+                      B (text) 120:8
+                  Ar (elem) 120:10
+                      path (text) 120:13
+              It (body) 120:2
+                  Print the files containing the physical blocks listed in the file (text) *121:1
+                  Ar (elem) *122:2
+                      path (text) 122:5
+                  . (text) 122:10).
+                  The file should contain one or more decimal, octal (with leading 0) or (text) *123:1
+                  hexadecimal (with leading 0x) numbers separated by white space.  The physical (text) *124:1
+                  block numbers are relative to the start of the partition, so if you (text) *125:1
+                  have block numbers relative to the start of the device, you will have to (text) *126:1
+                  subtract the block number of the start of the partition.  The size of a (text) *127:1
+                  physical block is given with the (text) *128:1
+                  Fl (elem) *129:2
+                      b (text) 129:5
+                  option; the default is 512 bytes per block. (text) *130:1.
+            It (block) *131:2
+              It (head) 131:2 ID=f
+                  Fl (elem) 131:5 HREF
+                      f (text) 131:8
+              It (body) 131:2
+                  When used with the (text) *132:1
+                  Fl (elem) *133:2
+                      p (text) 133:5
+                  option, force (text) *134:1
+                  Nm (elem) *135:2
+                      fsck_hfs (text) 135:2 NOSRC
+                  to check `clean' file systems, otherwise it means force (text) *136:1
+                  Nm (elem) *137:2
+                      fsck_hfs (text) 137:2 NOSRC
+                  to check and repair journaled HFS+ file systems. (text) *138:1.
+            It (block) *139:2
+              It (head) 139:2 ID=g
+                  Fl (elem) 139:5 HREF
+                      g (text) 139:8
+              It (body) 139:2
+                  Causes (text) *140:1
+                  Nm (elem) *141:2
+                      fsck_hfs (text) 141:2 NOSRC
+                  to generate its output strings in GUI format. (text) *142:1.
+                  This option is used when another application with a graphical user interface (text) *143:1
+                  (like Mac OS X Disk Utility) is invoking the (text) *144:1
+                  Nm (elem) *145:2
+                      fsck_hfs (text) 145:2 NOSRC
+                  tool. (text) *146:1.
+            It (block) *147:2
+              It (head) 147:2 ID=x
+                  Fl (elem) 147:5 HREF
+                      x (text) 147:8
+              It (body) 147:2
+                  Causes (text) *148:1
+                  Nm (elem) *149:2
+                      fsck_hfs (text) 149:2 NOSRC
+                  to generate its output strings in XML (plist) format.  This option (text) *150:1
+                  implies the (text) *151:1
+                  Fl (elem) *152:2
+                      g (text) 152:5
+                  option. (text) *153:1.
+            It (block) *154:2
+              It (head) 154:2 ID=l
+                  Fl (elem) 154:5 HREF
+                      l (text) 154:8
+              It (body) 154:2
+                  Lock down the file system and perform a testonly check. (text) *155:1.
+                  This makes it possible to check a file system that is currently mounted, (text) *156:1
+                  although no repairs can be made. (text) *157:1.
+            It (block) *158:2
+              It (head) 158:2 ID=m
+                  Fl (elem) 158:5 HREF
+                      m (text) 158:8
+                  Ar (elem) 158:10
+                      mode (text) 158:13
+              It (body) 158:2
+                  Mode is an octal number that will be used to set the permissions for the (text) *159:1
+                  lost+found directory when it is created. (text) *160:1.
+                  The lost+found directory is only created when a volume is repaired and orphaned (text) *161:1
+                  files or directories are detected. (text) *162:1.
+                  Nm (elem) *163:2
+                      fsck_hfs (text) 163:2 NOSRC
+                  places orphaned files and directories into the lost+found directory (located (text) *164:1
+                  at the root of the volume). (text) *165:1.
+                  The default mode is 01777. (text) *166:1.
+            It (block) *167:2
+              It (head) 167:2 ID=p
+                  Fl (elem) 167:5 HREF
+                      p (text) 167:8
+              It (body) 167:2
+                  Preen the specified file systems. (text) *168:1.
+            It (block) *169:2
+              It (head) 169:2 ID=q
+                  Fl (elem) 169:5 HREF
+                      q (text) 169:8
+              It (body) 169:2
+                  Causes (text) *170:1
+                  Nm (elem) *171:2
+                      fsck_hfs (text) 171:2 NOSRC
+                  to quickly check whether the volume was unmounted cleanly. (text) *172:1.
+                  If the volume was unmounted cleanly, then the exit status is 0. (text) *173:1.
+                  If the volume was not unmounted cleanly, then the exit status will be nonzero. (text) *174:1.
+                  In either case, a message is printed to standard output describing whether the (text) *175:1
+                  volume was clean or dirty. (text) *176:1.
+            It (block) *177:2
+              It (head) 177:2 ID=y
+                  Fl (elem) 177:5 HREF
+                      y (text) 177:8
+              It (body) 177:2
+                  Always attempt to repair any damage that is found. (text) *178:1.
+            It (block) *179:2
+              It (head) 179:2 ID=n
+                  Fl (elem) 179:5 HREF
+                      n (text) 179:8
+              It (body) 179:2
+                  Never attempt to repair any damage that is found. (text) *180:1.
+            It (block) *181:2
+              It (head) 181:2 ID=E
+                  Fl (elem) 181:5 HREF
+                      E (text) 181:8
+              It (body) 181:2
+                  Cause (text) *182:1
+                  Nm (elem) *183:2
+                      fsck_hfs (text) 183:2 NOSRC
+                  to exit (with a value of 47) if it encounters any (text) *184:1
+                  major errors.  A ``major error'' is considered one which (text) *185:1
+                  would impact using the volume in normal usage; an inconsistency (text) *186:1
+                  which would not impact such use is considered ``minor'' for this (text) *187:1
+                  option.  Only valid with the (text) *188:1
+                  Fl (elem) *189:2
+                      n (text) 189:5
+                  option. (text) *190:1.
+            It (block) *191:2
+              It (head) 191:2 ID=S
+                  Fl (elem) 191:5 HREF
+                      S (text) 191:8
+              It (body) 191:2
+                  Cause (text) *192:1
+                  Nm (elem) *193:2
+                      fsck_hfs (text) 193:2 NOSRC
+                  to scan the entire device looking for I/O errors.  It will (text) *194:1
+                  attempt to map the blocks with errors to names, similar to (text) *195:1
+                  the (text) *196:1
+                  Fl (elem) *197:2
+                      B (text) 197:5
+                  option. (text) *198:1.
+            It (block) *199:2
+              It (head) 199:2 ID=R
+                  Fl (elem) 199:5 HREF
+                      R (text) 199:8
+                  Ar (elem) 199:10
+                      flags (text) 199:13
+              It (body) 199:2
+                  Rebuilds the requested btree.  The following flags are supported: (text) *200:1
+                  Bl (block) -hang -offset [ [indent] ] -compact *201:2
+                    Bl (head) 201:2
+                    Bl (body) 201:2
+                        It (block) *202:2
+                          It (head) 202:2
+                              a (text) 202:5
+                          It (body) 202:2
+                              Attribute btree (text) *203:1
+                        It (block) *204:2
+                          It (head) 204:2
+                              c (text) 204:5
+                          It (body) 204:2
+                              Catalog btree (text) *205:1
+                        It (block) *206:2
+                          It (head) 206:2
+                              e (text) 206:5
+                          It (body) 206:2
+                              Extents overflow btree (text) *207:1
+                  Rebuilding a btree will only (text) *209:1
+                  work if there is enough free space on the file system for the new btree (text) *210:1
+                  file, and if (text) *211:1
+                  Nm (elem) *212:2
+                      fsck_hfs (text) 212:2 NOSRC
+                  is able to traverse each of the nodes in the requested btree successfully. (text) *213:1.
+            It (block) *214:2
+              It (head) 214:2 ID=r
+                  Fl (elem) 214:5 HREF
+                      r (text) 214:8
+              It (body) 214:2
+                  Rebuild the catalog btree.  This is synonymous with (text) *215:1
+                  Fl (elem) *216:2
+                      Rc (text) 216:5
+                  . (text) 216:8).
+      Pp (elem) *218:2
+      Because of inconsistencies between the block device and the buffer cache, (text) *219:1
+      the raw device should always be used. (text) *220:1.
+Sh (block) *221:2
+  Sh (head) 221:2 ID=HREF=EXIT_VALUES
+      EXIT VALUES (text) 221:5
+  Sh (body) 221:2
+      Nm (elem) *222:2
+          fsck_hfs (text) 222:2 NOSRC
+      indicates some status by exit value.  The current list of exit status results (text) *223:1
+      is: (text) *224:1
+      Bl (block) -hang -offset [ [indent] ] -compact *225:2
+        Bl (head) 225:2
+        Bl (body) 225:2
+            It (block) *226:2
+              It (head) 226:2
+                  0 (text) 226:5
+              It (body) 226:2
+                  No errors found, or successfully repaired. (text) *227:1.
+            It (block) *228:2
+              It (head) 228:2
+                  3 (text) 228:5
+              It (body) 228:2
+                  A quickcheck (the (text) *229:1
+                  Fl (elem) *230:2
+                      n (text) 230:5
+                  option) found a dirty filesystem; no repairs were made.  There is a potential (text) *231:1
+                  corruption in the filesystem, and either the journal could not be read, or a (text) *232:1
+                  runtime corruption was present so the HFS Volume Inconsistent bit was set. (text) *233:1.
+            It (block) *234:2
+              It (head) 234:2
+                  4 (text) 234:5
+              It (body) 234:2
+                  During boot, the root filesystem was found to be dirty; repairs were (text) *235:1
+                  made, and the filesystem was remounted.  The system should be rebooted. (text) *236:1.
+            It (block) *237:2
+              It (head) 237:2
+                  8 (text) 237:5
+              It (body) 237:2
+                  A corrupt filesystem was found during a check, or repairs did not succeed. (text) *238:1.
+            It (block) *239:2
+              It (head) 239:2
+                  47 (text) 239:5
+              It (body) 239:2
+                  A major error was found with (text) *240:1
+                  Fl (elem) *241:2
+                      E (text) 241:5
+                  . (text) 241:7).
+Sh (block) *243:2
+  Sh (head) 243:2 ID=HREF=SEE_ALSO
+      SEE ALSO (text) 243:5
+  Sh (body) 243:2
+      Xr (elem) *244:2
+          fsck (text) 244:5
+          8 (text) 244:10
+Sh (block) *245:2
+  Sh (head) 245:2 ID=HREF
+      BUGS (text) 245:5
+  Sh (body) 245:2
+      Nm (elem) *246:2
+          fsck_hfs (text) 246:2 NOSRC
+      is not able to fix some inconsistencies that it detects. (text) *247:1.
+Sh (block) *248:2
+  Sh (head) 248:2 ID=HREF
+      HISTORY (text) 248:5
+  Sh (body) 248:2
+      The (text) *249:1
+      Nm (elem) *250:2
+          fsck_hfs (text) 250:2 NOSRC
+      command appeared in Mac OS X Server 1.0 . (text) *251:1.
