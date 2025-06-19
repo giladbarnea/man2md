@@ -10,9 +10,9 @@ The tests/ dir contains three files:
 
 # Task
 Your task is to implement the `man2md` tool autonomously.
-1. Read the tests/*.txt file to get a sense of what you have to work with.
-2. Manually (hard-code) write a tests/zshexpn.md, based on zshexpn.txt. This will be your source of truth. This file is the output of `man2md` on the input file tests/zshexpn-raw.txt.
-3. Implement the tool in @man2md.py. It takes a raw man page path as input (like tests/zshexpn-raw.txt), converts it to markdown, and prints the result to stdout.
+- [x] Read the tests/*.txt file to get a sense of what you have to work with.
+- [x] Manually (hard-code) write a tests/zshexpn.md, based on zshexpn.txt. This will be your source of truth. This file is the output of `man2md` on the input file tests/zshexpn-raw.txt.
+- [x] Implement the tool in @man2md.py. It takes a raw man page path as input (like tests/zshexpn-raw.txt), converts it to markdown, and prints the result to stdout.
 
 # Rules
 1. You must work in TDD. You must work in a think-fix-test cycle.

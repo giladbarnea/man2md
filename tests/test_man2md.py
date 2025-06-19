@@ -7,7 +7,7 @@ def test_man2md_basic_structure():
     """Test that man2md produces basic markdown structure"""
     result = subprocess.run([
         sys.executable, 'man2md.py', 
-        'tests/zshexpn-raw.txt'
+        'tests/zshexpn/zshexpn-raw.txt'
     ], capture_output=True, text=True)
     
     assert result.returncode == 0
@@ -23,7 +23,7 @@ def test_man2md_name_section():
     """Test NAME section conversion"""
     result = subprocess.run([
         sys.executable, 'man2md.py', 
-        'tests/zshexpn-raw.txt'
+        'tests/zshexpn/zshexpn-raw.txt'
     ], capture_output=True, text=True)
     
     assert result.returncode == 0
@@ -36,7 +36,7 @@ def test_man2md_description_section():
     """Test DESCRIPTION section conversion"""
     result = subprocess.run([
         sys.executable, 'man2md.py', 
-        'tests/zshexpn-raw.txt'
+        'tests/zshexpn/zshexpn-raw.txt'
     ], capture_output=True, text=True)
     
     assert result.returncode == 0
