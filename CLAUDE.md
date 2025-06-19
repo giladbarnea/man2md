@@ -13,10 +13,12 @@ Your task is to implement the `man2md` tool autonomously.
 1. Read the tests/*.txt file to get a sense of what you have to work with.
 2. Manually (hard-code) write a tests/zshexpn.md, based on zshexpn.txt. This will be your source of truth. This file is the output of `man2md` on the input file tests/zshexpn-raw.txt.
 3. Implement the tool in @man2md.py. It takes a raw man page path as input (like tests/zshexpn-raw.txt), converts it to markdown, and prints the result to stdout.
-	a. You must work in TDD. You must work in a think-fix-test cycle.
-	b. Therefore, create the test your need first.
-	c. Work iteratively.
-	d. Complimentary to point c, work on small chunks of the problem; literally, work on the first H1 section first; one you get it right, move on to the next H1 section, and work only on its first paragraph or first few paragraphs; etc. This is to avoid trying to solve the whole problem at once and comparing the result to the entire source of truth.
+
+# Rules
+1. You must work in TDD. You must work in a think-fix-test cycle.
+2. Therefore, create the test your need first.
+3. Work iteratively.
+4. Complimentary to point 3, work on small chunks of the problem; literally, work on the first H1 section first; one you get it right, move on to the next H1 section, and work only on its first paragraph or first few paragraphs; etc. This is to avoid trying to solve the whole problem at once and comparing the result to the entire source of truth.
 
 # Dev Cycle
 1. This is a Mac.
