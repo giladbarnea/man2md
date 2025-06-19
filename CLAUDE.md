@@ -11,9 +11,9 @@ The tests/ dir contains two test suites:
 3. zshexpn-tree.txt: The tree structure of the man page. The output of `mandoc -T tree /usr/share/man/man1/zshexpn.1`. It has a rather peculiar syntax, but it does contain the structure information of the raw man page. In other words, zshexpn-tree.txt describes zshexpn-raw.txt well (not zshexpn.txt). This file can be parsed by `man2md` to get the structure information of the man page.
 
 ### fsck_hfs test suite (tests/fsck_hfs/)
-1. fsck_hfs-raw.txt: the raw man page for fsck_hfs. The output of `cat /usr/share/man/man8/fsck_hfs.8` as-is. This will be the input to `man2md`.
+1. fsck_hfs_raw.txt: the raw man page for fsck_hfs. The output of `cat /usr/share/man/man8/fsck_hfs.8` as-is. This will be the input to `man2md`.
 2. fsck_hfs.txt: The parsed man page for fsck_hfs. The output of `man fsck_hfs | col -b`. It is not Markdown, but unlike the raw man page source, it is human-readable. This file's only purpose is for you to read and get an intuition of the man page and its structure; it is not the input nor the output of `man2md`.
-3. fsck_hfs-tree.txt: The tree structure of the man page. The output of `mandoc -T tree /usr/share/man/man8/fsck_hfs.8`. It has a rather peculiar syntax, but it does contain the structure information of the raw man page. In other words, fsck_hfs-tree.txt describes fsck_hfs-raw.txt well (not fsck_hfs.txt). This file can be parsed by `man2md` to get the structure information of the man page.
+3. fsck_hfs_tree.txt: The tree structure of the man page. The output of `mandoc -T tree /usr/share/man/man8/fsck_hfs.8`. It has a rather peculiar syntax, but it does contain the structure information of the raw man page. In other words, fsck_hfs_tree.txt describes fsck_hfs_raw.txt well (not fsck_hfs.txt). This file can be parsed by `man2md` to get the structure information of the man page.
 
 # Task
 Your task is to implement the `man2md` tool autonomously.
@@ -25,8 +25,8 @@ Your task is to implement the `man2md` tool autonomously.
 
 ## Current task (fsck_hfs test suite)
 - [ ] Read the tests/fsck_hfs/*.txt files to get a sense of what you have to work with.
-- [ ] Manually (hard-code) write a tests/fsck_hfs/fsck_hfs.md, based on fsck_hfs.txt. This will be your source of truth. This file is the output of `man2md` on the input file tests/fsck_hfs/fsck_hfs-raw.txt.
-- [ ] Test the existing tool with fsck_hfs and fix any issues that arise.
+- [ ] Manually (hard-code) write a tests/fsck_hfs/fsck_hfs.md, based on fsck_hfs.txt. This will be your source of truth. This file is the output of `man2md` on the input file tests/fsck_hfs/fsck_hfs_raw.txt. ATTENTION: This file must be consistent with tests/zshexpn/zshexpn.md. By consistent, I mean that the conversion of fsck_hfs_raw.txt to fsck_hfs.md must be consistent with the conversion of zshexpn-raw.txt to zshexpn.md. This is crucial, because otherwise, the project will end up with two "types" of source of truth, which will make it impossible to test the tool.
+- [ ] Only after you are confident that the conversions are consistent, test the existing tool with fsck_hfs and fix any issues that arise.
 
 # Rules
 1. You must work in TDD. You must work in a think-fix-test cycle.
