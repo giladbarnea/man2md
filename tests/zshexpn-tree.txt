@@ -1,0 +1,627 @@
+title = "ZSHEXPN"
+sec   = "1"
+vol   = "General Commands Manual"
+os    = "zsh 5\&.9"
+date  = "May 14, 2022"
+
+SH (block) *2:2
+  SH (head) 2:2 ID=HREF
+      NAME (text) 2:5
+  SH (body) 2:2
+      zshexpn \- zsh expansion and substitution (text) *3:1
+SH (block) *5:2
+  SH (head) 5:2 ID=HREF
+      DESCRIPTION (text) 5:5
+  SH (body) 5:2
+      The following types of expansions are performed in the indicated order in (text) *6:1
+      five steps: (text) *7:1
+      PP (block) *8:2
+        PP (head) 8:2
+        PP (body) 8:2
+            PD (elem) *9:2
+                0 (text) 9:5
+      TP (block) *10:2
+        TP (head) 10:2
+            PD (elem) *11:2
+            \fIHistory Expansion\fP (text) *12:1
+        TP (body) 12:1
+            This is performed only in interactive shells\&. (text) *13:1.
+      TP (block) *14:2
+        TP (head) 14:2 ID=HREF=Alias
+            \fIAlias Expansion\fP (text) *15:1
+        TP (body) 15:1
+            Aliases are expanded immediately before the command line is parsed as (text) *16:1
+            explained (text) *17:1
+            under Aliasing in \fIzshmisc\fP(1)\&. (text) *18:1.
+      TP (block) *19:2
+        TP (head) 19:2
+            PD (elem) *20:2
+                0 (text) 20:5
+            \fIProcess Substitution\fP (text) *21:1
+        TP (body) 21:1
+      TP (block) *22:2
+        TP (head) 22:2
+            PD (elem) *23:2
+                0 (text) 23:5
+            \fIParameter Expansion\fP (text) *24:1
+        TP (body) 24:1
+      TP (block) *25:2
+        TP (head) 25:2
+            PD (elem) *26:2
+                0 (text) 26:5
+            \fICommand Substitution\fP (text) *27:1
+        TP (body) 27:1
+      TP (block) *28:2
+        TP (head) 28:2
+            PD (elem) *29:2
+                0 (text) 29:5
+            \fIArithmetic Expansion\fP (text) *30:1
+        TP (body) 30:1
+      TP (block) *31:2
+        TP (head) 31:2
+            PD (elem) *32:2
+            \fIBrace Expansion\fP (text) *33:1
+        TP (body) 33:1
+            These five are performed in left\-to\-right fashion\&.  On each argument, (text) *34:1
+            any of the five steps that are needed are performed one after the other\&. (text) *35:1.
+            Hence, for example, all the parts of parameter expansion are completed (text) *36:1
+            before command substitution is started\&.  After these expansions, all (text) *37:1
+            unquoted occurrences of the characters `\fB\e\fP\&',`\fB'\fP' and `\fB"\fP' are (text) *38:1
+            removed\&. (text) *39:1.
+      TP (block) *40:2
+        TP (head) 40:2 ID=HREF=Filename
+            \fIFilename Expansion\fP (text) *41:1
+        TP (body) 41:1
+            If the \fBSH_FILE_EXPANSION\fP option is set, the order of expansion is (text) *42:1
+            modified for compatibility with \fBsh\fP and \fBksh\fP\&.  In that case (text) *43:1
+            \fIfilename expansion\fP is performed immediately after \fIalias expansion\fP, (text) *44:1
+            preceding the set of five expansions mentioned above\&. (text) *45:1.
+      TP (block) *46:2
+        TP (head) 46:2 ID=HREF=Filename
+            \fIFilename Generation\fP (text) *47:1
+        TP (body) 47:1
+            This expansion, commonly referred to as \fBglobbing\fP, is always done last\&. (text) *48:1.
+      PP (block) *49:2
+        PP (head) 49:2
+        PP (body) 49:2
+            The following sections explain the types of expansion in detail\&. (text) *50:1.
+SH (block) *52:2
+  SH (head) 52:2 ID=HREF=HISTORY_EXPANSION
+      HISTORY EXPANSION (text) 52:5
+  SH (body) 52:2
+      History expansion allows you to use words from previous command (text) *53:1
+      lines in the command line you are typing\&.  This simplifies spelling (text) *54:1
+      corrections and the repetition of complicated commands or arguments\&. (text) *55:1.
+      PP (block) *56:2
+        PP (head) 56:2
+        PP (body) 56:2
+            Immediately before execution, each command is saved in the history list, (text) *57:1
+            the size of which is controlled by the \fBHISTSIZE\fP parameter\&.  The one (text) *58:1
+            most recent command is always retained in any case\&.  Each saved command in (text) *59:1
+            the history list is called a history \fIevent\fP and is assigned a number, (text) *60:1
+            beginning with 1 (one) when the shell starts up\&.  The history number that (text) *61:1
+            you may see in your prompt (see (text) *62:1
+            EXPANSION OF PROMPT SEQUENCES in \fIzshmisc\fP(1)) is the number that is to be assigned to the \fInext\fP command\&. (text) *63:1.
+      SS (block) *65:2
+        SS (head) 65:2 ID=HREF
+            Overview (text) 65:5
+        SS (body) 65:2
+            A history expansion begins with the first character of the \fBhistchars\fP (text) *66:1
+            parameter, which is `\fB!\fP\&' by default, and may occur anywhere on the (text) *67:1
+            command line, including inside double quotes (but not inside single quotes (text) *68:1
+            \fB\&'\&.\&.\&.'\fP or C\-style quotes \fB$'\&.\&.\&.'\fP nor when escaped with a backslash)\&. (text) *69:1.
+            PP (block) *70:2
+              PP (head) 70:2
+              PP (body) 70:2
+                  The first character is followed by an optional event designator (text) *71:1
+                  (see the section `Event Designators\&') and then an optional word (text) *72:1
+                  designator (the section `Word Designators\&'); if neither of these designators is (text) *73:1
+                  present, no history expansion occurs\&. (text) *74:1.
+            PP (block) *75:2
+              PP (head) 75:2
+              PP (body) 75:2
+                  Input lines containing history expansions are echoed after being expanded, (text) *76:1
+                  but before any other expansions take place and before the command is (text) *77:1
+                  executed\&.  It is this expanded form that is recorded as the history event (text) *78:1
+                  for later references\&. (text) *79:1.
+            PP (block) *80:2
+              PP (head) 80:2
+              PP (body) 80:2
+                  History expansions do not nest\&. (text) *81:1.
+            PP (block) *82:2
+              PP (head) 82:2
+              PP (body) 82:2
+                  By default, a history reference with no event designator refers to the (text) *83:1
+                  same event as any preceding history reference on that command line; if it (text) *84:1
+                  is the only history reference in a command, it refers to the previous (text) *85:1
+                  command\&. (text) *86:1.
+                  However, if the option \fBCSH_JUNKIE_HISTORY\fP is set, then every history (text) *87:1
+                  reference with no event specification \fIalways\fP refers to the previous (text) *88:1
+                  command\&. (text) *89:1.
+            PP (block) *90:2
+              PP (head) 90:2
+              PP (body) 90:2
+                  For example, `\fB!\fP\&' is the event designator for the previous command, so (text) *91:1
+                  `\fB!!:1\fP\&' always refers to the first word of the previous command, and (text) *92:1
+                  `\fB!!$\fP\&' always refers to the last word of the previous command\&.  With (text) *93:1
+                  \fBCSH_JUNKIE_HISTORY\fP set, then `\fB!:1\fP\&' and `\fB!$\fP' function in the (text) *94:1
+                  same manner as `\fB!!:1\fP\&' and `\fB!!$\fP', respectively\&.  Conversely, if (text) *95:1
+                  \fBCSH_JUNKIE_HISTORY\fP is unset, then `\fB!:1\fP\&' and `\fB!$\fP' refer to the (text) *96:1
+                  first and last words, respectively, of the same event referenced by the (text) *97:1
+                  nearest other history reference preceding them on the current command (text) *98:1
+                  line, or to the previous command if there is no preceding reference\&. (text) *99:1.
+            PP (block) *100:2
+              PP (head) 100:2
+              PP (body) 100:2
+                  The character sequence `\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\&' (where `\fB^\fP' is (text) *101:1
+                  actually the second character of the \fBhistchars\fP parameter) (text) *102:1
+                  repeats the last command, replacing the string \fIfoo\fP with \fIbar\fP\&. (text) *103:1.
+                  More precisely, the sequence `\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\fB^\fP\&' is (text) *104:1
+                  synonymous with `\fB!!:s\fP\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\fB^\fP\&', hence other (text) *105:1
+                  modifiers (see the section `Modifiers\&') may follow the final `\fB^\fP'\&. (text) *106:1.
+                  In particular, `\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\fB^:G\fP\&' performs a global (text) *107:1
+                  substitution\&. (text) *108:1.
+            PP (block) *109:2
+              PP (head) 109:2
+              PP (body) 109:2
+                  If the shell encounters the character sequence `\fB!"\fP\&' (text) *110:1
+                  in the input, the history mechanism is temporarily disabled until (text) *111:1
+                  the current list (see (text) *112:1
+                  \fIzshmisc\fP(1)) is fully parsed\&.  The `\fB!"\fP\&' is removed from the input, and any (text) *113:1
+                  subsequent `\fB!\fP\&' characters have no special significance\&. (text) *114:1.
+            PP (block) *115:2
+              PP (head) 115:2
+              PP (body) 115:2
+                  A less convenient but more comprehensible form of command history support (text) *116:1
+                  is provided by the \fBfc\fP builtin\&. (text) *117:1.
+      SS (block) *118:2
+        SS (head) 118:2 ID=HREF=Event_Designators
+            Event Designators (text) 118:5
+        SS (body) 118:2
+            An event designator is a reference to a command\-line entry in the history (text) *119:1
+            list\&.  In the list below, remember that the initial \fB`!\&'\fP in each item (text) *120:1
+            may be changed to another character by setting the \fBhistchars\fP (text) *121:1
+            parameter\&. (text) *122:1.
+            PP (block) *123:2
+              PP (head) 123:2
+              PP (body) 123:2
+                  PD (elem) *124:2
+                      0 (text) 124:5
+            TP (block) *125:2
+              TP (head) 125:2
+                  PD (elem) *126:2
+                  \fB!\fP (text) *127:1
+              TP (body) 127:1
+                  Start a history expansion, except when followed by a blank, newline, (text) *128:1
+                  `\fB=\fP\&' or `\fB(\fP'\&.  If followed immediately by a word designator (text) *129:1
+                  (see the section `Word Designators\&'), this forms a history reference (text) *130:1
+                  with no event designator (see the section `Overview\&')\&. (text) *131:1.
+            TP (block) *132:2
+              TP (head) 132:2
+                  \fB!!\fP (text) *133:1
+              TP (body) 133:1
+                  Refer to the previous command\&. (text) *134:1.
+                  By itself, this expansion (text) *135:1
+                  repeats the previous command\&. (text) *136:1.
+            TP (block) *137:2
+              TP (head) 137:2
+                  \fB!\fP\fIn\fP (text) *138:1
+              TP (body) 138:1
+                  Refer to command\-line \fIn\fP\&. (text) *139:1.
+            TP (block) *140:2
+              TP (head) 140:2
+                  \fB!\-\fP\fIn\fP (text) *141:1
+              TP (body) 141:1
+                  Refer to the current command\-line minus \fIn\fP\&. (text) *142:1.
+            TP (block) *143:2
+              TP (head) 143:2
+                  \fB!\fP\fIstr\fP (text) *144:1
+              TP (body) 144:1
+                  Refer to the most recent command starting with \fIstr\fP\&. (text) *145:1.
+            TP (block) *146:2
+              TP (head) 146:2
+                  \fB!?\fP\fIstr\fP[\fB?\fP] (text) *147:1
+              TP (body) 147:1
+                  Refer to the most recent command containing \fIstr\fP\&.  The trailing (text) *148:1
+                  `\fB?\fP\&' is necessary if this reference is to be followed by a modifier or (text) *149:1
+                  followed by any text that is not to be considered part of \fIstr\fP\&. (text) *150:1.
+            TP (block) *151:2
+              TP (head) 151:2
+                  \fB!#\fP (text) *152:1
+              TP (body) 152:1
+                  Refer to the current command line typed in so far\&.  The line is (text) *153:1
+                  treated as if it were complete up to and including the word before the (text) *154:1
+                  one with the `\fB!#\fP\&' reference\&. (text) *155:1.
+            TP (block) *156:2
+              TP (head) 156:2
+                  \fB!{\fP\&.\&.\&.\fB}\fP (text) *157:1
+              TP (body) 157:1
+                  Insulate a history reference from adjacent characters (if necessary)\&. (text) *158:1.
+      SS (block) *159:2
+        SS (head) 159:2 ID=HREF=Word_Designators
+            Word Designators (text) 159:5
+        SS (body) 159:2
+            A word designator indicates which word or words of a given command line are (text) *160:1
+            to be included in a history reference\&.  A `\fB:\fP\&' usually (text) *161:1
+            separates the event specification from the word designator\&. (text) *162:1.
+            It may be omitted only if the word designator begins with a (text) *163:1
+            `\fB^\fP\&', `\fB$\fP', `\fB*\fP', `\fB\-\fP' or `\fB%\fP'\&. (text) *164:1.
+            Word designators include: (text) *165:1
+            PP (block) *166:2
+              PP (head) 166:2
+              PP (body) 166:2
+                  PD (elem) *167:2
+                      0 (text) 167:5
+            TP (block) *168:2
+              TP (head) 168:2
+                  \fB0\fP (text) *169:1
+              TP (body) 169:1
+                  The first input word (command)\&. (text) *170:1.
+            TP (block) *171:2
+              TP (head) 171:2 ID=HREF=n
+                  \fIn\fP (text) *172:1
+              TP (body) 172:1
+                  The \fIn\fPth argument\&. (text) *173:1.
+            TP (block) *174:2
+              TP (head) 174:2
+                  \fB^\fP (text) *175:1
+              TP (body) 175:1
+                  The first argument\&.  That is, \fB1\fP\&. (text) *176:1.
+            TP (block) *177:2
+              TP (head) 177:2
+                  \fB$\fP (text) *178:1
+              TP (body) 178:1
+                  The last argument\&. (text) *179:1.
+            TP (block) *180:2
+              TP (head) 180:2
+                  \fB%\fP (text) *181:1
+              TP (body) 181:1
+                  The word matched by (the most recent) \fB?\fP\fIstr\fP search\&. (text) *182:1.
+            TP (block) *183:2
+              TP (head) 183:2 ID=HREF=x
+                  \fIx\fP\fB\-\fP\fIy\fP (text) *184:1
+              TP (body) 184:1
+                  A range of words; \fIx\fP defaults to \fB0\fP\&. (text) *185:1.
+            TP (block) *186:2
+              TP (head) 186:2
+                  \fB*\fP (text) *187:1
+              TP (body) 187:1
+                  All the arguments, or a null value if there are none\&. (text) *188:1.
+            TP (block) *189:2
+              TP (head) 189:2 ID=HREF=x
+                  \fIx\fP\fB*\fP (text) *190:1
+              TP (body) 190:1
+                  Abbreviates `\fIx\fP\fB\-$\fP\&'\&. (text) *191:1.
+            TP (block) *192:2
+              TP (head) 192:2 ID=HREF=x
+                  \fIx\fP\fB\-\fP (text) *193:1
+              TP (body) 193:1
+                  Like `\fIx\fP\fB*\fP\&' but omitting word \fB$\fP\&. (text) *194:1.
+                  PD (elem) *195:2
+            PP (block) *196:2
+              PP (head) 196:2
+              PP (body) 196:2
+                  Note that a `\fB%\fP\&' word designator works only when used in one of (text) *197:1
+                  `\fB!%\fP\&', `\fB!:%\fP' or `\fB!?\fP\fIstr\fP\fB?:%\fP', and only when used after a (text) *198:1
+                  \fB!?\fP expansion (possibly in an earlier command)\&.  Anything else results (text) *199:1
+                  in an error, although the error may not be the most obvious one\&. (text) *200:1.
+      SS (block) *201:2
+        SS (head) 201:2 ID=HREF
+            Modifiers (text) 201:5
+        SS (body) 201:2
+            After the optional word designator, you can add (text) *202:1
+            a sequence of one or more of the following modifiers, (text) *203:1
+            each preceded by a `\fB:\fP\&'\&.  These modifiers also work on the result (text) *204:1
+            of \fIfilename generation\fP and \fIparameter expansion\fP, except where (text) *205:1
+            noted\&. (text) *206:1.
+            PP (block) *207:2
+              PP (head) 207:2
+              PP (body) 207:2
+                  PD (elem) *208:2
+                      0 (text) 208:5
+            TP (block) *209:2
+              TP (head) 209:2
+                  PD (elem) *210:2
+                  \fBa\fP (text) *211:1
+              TP (body) 211:1
+                  Turn a file name into an absolute path:  prepends the current directory, (text) *212:1
+                  if necessary; remove `\fB\&.\fP\&' path segments; and remove `\fB\&.\&.\fP' path segments (text) *213:1
+                  and the segments that immediately precede them\&. (text) *214:1.
+            RS (block) *215:2
+              RS (head) 215:2
+              RS (body) 215:2
+                  PP (block) *216:2
+                    PP (head) 216:2
+                    PP (body) 216:2
+                        This transformation is agnostic about what is in the filesystem, i\&.e\&. is (text) *217:1
+                        on the logical, not the physical directory\&.  It takes place in the same (text) *218:1
+                        manner as when changing directories when neither of the options (text) *219:1
+                        \fBCHASE_DOTS\fP or \fBCHASE_LINKS\fP is set\&.  For example, (text) *220:1
+                        `\fB/before/here/\&.\&./after\fP\&' is always transformed to (text) *221:1
+                        `\fB/before/after\fP\&', regardless of whether `\fB/before/here\fP' exists or what (text) *222:1
+                        kind of object (dir, file, symlink, etc\&.) it is\&. (text) *223:1.
+            TP (block) *225:2
+              TP (head) 225:2 ID=HREF=A
+                  \fBA\fP (text) *226:1
+              TP (body) 226:1
+                  Turn a file name into an absolute path as the `\fBa\fP\&' modifier does, and (text) *227:1
+                  \fIthen\fP pass the result through the \fBrealpath(3)\fP library (text) *228:1
+                  function to resolve symbolic links\&. (text) *229:1.
+            RS (block) *230:2
+              RS (head) 230:2
+              RS (body) 230:2
+                  PP (block) *231:2
+                    PP (head) 231:2
+                    PP (body) 231:2
+                        Note: on systems that do not have a \fBrealpath(3)\fP library (text) *232:1
+                        function, symbolic links are not resolved, so on those systems `\fBa\fP\&' and (text) *233:1
+                        `\fBA\fP\&' are equivalent\&. (text) *234:1.
+                  PP (block) *235:2
+                    PP (head) 235:2
+                    PP (body) 235:2
+                        Note: \fBfoo:A\fP and \fBrealpath(foo)\fP are different on some inputs\&. (text) *236:1.
+                        For \fBrealpath(foo)\fP semantics, see the `\fBP\fP` modifier\&. (text) *237:1.
+            TP (block) *239:2
+              TP (head) 239:2 ID=HREF=c
+                  \fBc\fP (text) *240:1
+              TP (body) 240:1
+                  Resolve a command name into an absolute path by searching the command (text) *241:1
+                  path given by the \fBPATH\fP variable\&.  This does not work for commands (text) *242:1
+                  containing directory parts\&.  Note also that this does not usually work as (text) *243:1
+                  a glob qualifier unless a file of the same name is found in the (text) *244:1
+                  current directory\&. (text) *245:1.
+            TP (block) *246:2
+              TP (head) 246:2 ID=HREF=e
+                  \fBe\fP (text) *247:1
+              TP (body) 247:1
+                  Remove all but the part of the filename extension following the `\fB\&.\fP\&'; (text) *248:1
+                  see the definition of the filename extension in the description of the (text) *249:1
+                  \fBr\fP modifier below\&.  Note that according to that definition the result (text) *250:1
+                  will be empty if the string ends with a `\fB\&.\fP\&'\&. (text) *251:1.
+            TP (block) *252:2
+              TP (head) 252:2 ID=HREF=h
+                  \fBh\fP [ \fIdigits\fP ] (text) *253:1
+              TP (body) 253:1
+                  Remove a trailing pathname component, shortening the path by one (text) *254:1
+                  directory level: this is the `head\&' of the pathname\&.  This works like (text) *255:1
+                  `\fBdirname\fP\&'\&.  If the \fBh\fP is followed immediately (with no spaces or (text) *256:1
+                  other separator) by any number of decimal digits, and the value of the (text) *257:1
+                  resulting number is non\-zero, that number of leading components is (text) *258:1
+                  preserved instead of the final component being removed\&.  In an (text) *259:1
+                  absolute path the leading `\fB/\fP\&' is the first component, so, (text) *260:1
+                  for example, if \fBvar=/my/path/to/something\fP, then \fB${var:h3}\fP (text) *261:1
+                  substitutes \fB/my/path\fP\&.  Consecutive `/\&'s are treated the same as (text) *262:1
+                  a single `/\&'\&.  In parameter substitution, digits may only be (text) *263:1
+                  used if the expression is in braces, so for example the short form (text) *264:1
+                  substitution \fB$var:h2\fP is treated as \fB${var:h}2\fP, not as (text) *265:1
+                  \fB${var:h2}\fP\&.  No restriction applies to the use of digits in history (text) *266:1
+                  substitution or globbing qualifiers\&.  If more components are requested (text) *267:1
+                  than are present, the entire path is substituted (so this does not (text) *268:1
+                  trigger a `failed modifier\&' error in history expansion)\&. (text) *269:1.
+            TP (block) *270:2
+              TP (head) 270:2 ID=HREF=l
+                  \fBl\fP (text) *271:1
+              TP (body) 271:1
+                  Convert the words to all lowercase\&. (text) *272:1.
+            TP (block) *273:2
+              TP (head) 273:2 ID=HREF=p
+                  \fBp\fP (text) *274:1
+              TP (body) 274:1
+                  Print the new command but do not execute it\&.  Only works with history (text) *275:1
+                  expansion\&. (text) *276:1.
+            TP (block) *277:2
+              TP (head) 277:2 ID=HREF=P
+                  \fBP\fP (text) *278:1
+              TP (body) 278:1
+                  Turn a file name into an absolute path, like \fBrealpath(3)\fP\&. (text) *279:1.
+                  The resulting path will be absolute, (text) *280:1
+                  will refer to the same directory entry as the input filename, (text) *281:1
+                  and none of its components will be symbolic links or equal to (text) *282:1
+                  `\fB\&.\fP\&' or `\fB\&.\&.\fP'\&. (text) *283:1.
+            RS (block) *284:2
+              RS (head) 284:2
+              RS (body) 284:2
+                  PP (block) *285:2
+                    PP (head) 285:2
+                    PP (body) 285:2
+                        Unlike \fBrealpath(3)\fP, non\-existent trailing components are (text) *286:1
+                        permitted and preserved\&. (text) *287:1.
+            TP (block) *289:2
+              TP (head) 289:2 ID=HREF=q
+                  \fBq\fP (text) *290:1
+              TP (body) 290:1
+                  Quote the substituted words, escaping further substitutions\&.  Works (text) *291:1
+                  with history expansion and parameter expansion, though for parameters (text) *292:1
+                  it is only useful if the resulting text is to be re\-evaluated such as (text) *293:1
+                  by \fBeval\fP\&. (text) *294:1.
+            TP (block) *295:2
+              TP (head) 295:2 ID=HREF=Q
+                  \fBQ\fP (text) *296:1
+              TP (body) 296:1
+                  Remove one level of quotes from the substituted words\&. (text) *297:1.
+            TP (block) *298:2
+              TP (head) 298:2 ID=HREF=r
+                  \fBr\fP (text) *299:1
+              TP (body) 299:1
+                  Remove a filename extension leaving the root name\&.  Strings with no (text) *300:1
+                  filename extension are not altered\&.  A filename (text) *301:1
+                  extension is a `\fB\&.\fP\&' followed by any number of characters (including (text) *302:1
+                  zero) that are neither `\fB\&.\fP\&' nor `\fB/\fP' and that continue to the end (text) *303:1
+                  of the string\&.  For example, the extension of (text) *304:1
+                  `\fBfoo\&.orig\&.c\fP\&' is `\fB\&.c\fP', and `\fBdir\&.c/foo\fP' has no extension\&. (text) *305:1.
+            TP (block) *306:2
+              TP (head) 306:2 ID=HREF=s/
+                  \fBs/\fP\fIl\fP\fB/\fP\fIr\fP[\fB/\fP] (text) *307:1
+              TP (body) 307:1
+                  Substitute \fIr\fP for \fIl\fP as described below\&. (text) *308:1.
+                  The substitution is done only for the (text) *309:1
+                  first string that matches \fIl\fP\&.  For arrays and for filename (text) *310:1
+                  generation, this applies to each word of the expanded text\&.  See (text) *311:1
+                  below for further notes on substitutions\&. (text) *312:1.
+            RS (block) *313:2
+              RS (head) 313:2
+              RS (body) 313:2
+                  PP (block) *314:2
+                    PP (head) 314:2
+                    PP (body) 314:2
+                        The forms `\fBgs/\fP\fIl\fP\fB/\fP\fIr\fP\&' and `\fBs/\fP\fIl\fP\fB/\fP\fIr\fP\fB/:G\fP' (text) *315:1
+                        perform global substitution, i\&.e\&. substitute every occurrence of \fIr\fP (text) *316:1
+                        for \fIl\fP\&.  Note that the \fBg\fP or \fB:G\fP must appear in exactly the (text) *317:1
+                        position shown\&. (text) *318:1.
+                  PP (block) *319:2
+                    PP (head) 319:2
+                    PP (body) 319:2
+                        See further notes on this form of substitution below\&. (text) *320:1.
+            TP (block) *322:2
+              TP (head) 322:2
+                  \fB&\fP (text) *323:1
+              TP (body) 323:1
+                  Repeat the previous \fBs\fP substitution\&.  Like \fBs\fP, may be preceded (text) *324:1
+                  immediately by a \fBg\fP\&.  In parameter expansion the \fB&\fP must appear (text) *325:1
+                  inside braces, and in filename generation it must be quoted with a (text) *326:1
+                  backslash\&. (text) *327:1.
+            TP (block) *328:2
+              TP (head) 328:2 ID=HREF=t
+                  \fBt\fP [ \fIdigits\fP ] (text) *329:1
+              TP (body) 329:1
+                  Remove all leading pathname components, leaving the final component (tail)\&. (text) *330:1.
+                  This works like `\fBbasename\fP\&'\&.  Any trailing slashes are first removed\&. (text) *331:1.
+                  Decimal digits are handled as described above for (h), but in this (text) *332:1
+                  case that number of trailing components is preserved instead of (text) *333:1
+                  the default 1; 0 is treated the same as 1\&. (text) *334:1.
+            TP (block) *335:2
+              TP (head) 335:2 ID=HREF=u
+                  \fBu\fP (text) *336:1
+              TP (body) 336:1
+                  Convert the words to all uppercase\&. (text) *337:1.
+            TP (block) *338:2
+              TP (head) 338:2 ID=HREF=x
+                  \fBx\fP (text) *339:1
+              TP (body) 339:1
+                  Like \fBq\fP, but break into words at whitespace\&.  Does not work with (text) *340:1
+                  parameter expansion\&. (text) *341:1.
+            PP (block) *342:2
+              PP (head) 342:2
+              PP (body) 342:2
+                  The \fBs/\fP\fIl\fP\fB/\fP\fIr\fP\fB/\fP substitution works as follows\&.  By (text) *343:1
+                  default the left\-hand side of substitutions are not patterns, but (text) *344:1
+                  character strings\&.  Any character can be used as the delimiter in place (text) *345:1
+                  of `\fB/\fP\&'\&.  A backslash quotes the delimiter character\&.  The character (text) *346:1
+                  `\fB&\fP\&', in the right\-hand\-side \fIr\fP, is replaced by the text from the (text) *347:1
+                  left\-hand\-side \fIl\fP\&.  The `\fB&\fP\&' can be quoted with a backslash\&.  A (text) *348:1
+                  null \fIl\fP uses the previous string either from the previous \fIl\fP or (text) *349:1
+                  from the contextual scan string \fIs\fP from `\fB!?\fP\fIs\fP\&'\&.  You can (text) *350:1
+                  omit the rightmost delimiter if a newline immediately follows \fIr\fP; (text) *351:1
+                  the rightmost `\fB?\fP\&' in a context scan can similarly be omitted\&.  Note (text) *352:1
+                  the same record of the last \fIl\fP and \fIr\fP is maintained across all (text) *353:1
+                  forms of expansion\&. (text) *354:1.
+            PP (block) *355:2
+              PP (head) 355:2
+              PP (body) 355:2
+                  Note that if a `\fB&\fP\&' is used within glob qualifiers an extra backslash (text) *356:1
+                  is needed as a \fB&\fP is a special character in this case\&. (text) *357:1.
+            PP (block) *358:2
+              PP (head) 358:2
+              PP (body) 358:2
+                  Also note that the order of expansions affects the interpretation of (text) *359:1
+                  \fIl\fP and \fIr\fP\&.  When used in a history expansion, which occurs before (text) *360:1
+                  any other expansions, \fIl\fP and \fIr\fP are treated as literal strings (text) *361:1
+                  (except as explained for \fBHIST_SUBST_PATTERN\fP below)\&.  When used in (text) *362:1
+                  parameter expansion, the replacement of \fIr\fP into the parameter\&'s value (text) *363:1
+                  is done first, and then any additional process, parameter, command, (text) *364:1
+                  arithmetic, or brace references are applied, which may evaluate those (text) *365:1
+                  substitutions and expansions more than once if \fIl\fP appears more than (text) *366:1
+                  once in the starting value\&.  When used in a glob qualifier, any (text) *367:1
+                  substitutions or expansions are performed once at the time the qualifier (text) *368:1
+                  is parsed, even before the `\fB:s\fP\&' expression itself is divided into (text) *369:1
+                  \fIl\fP and \fIr\fP sides\&. (text) *370:1.
+            PP (block) *371:2
+              PP (head) 371:2
+              PP (body) 371:2
+                  If the option \fBHIST_SUBST_PATTERN\fP is set, \fIl\fP is treated as (text) *372:1
+                  a pattern of the usual form described in (text) *373:1
+                  the section FILENAME GENERATION below\&.  This can be used in (text) *374:1
+                  all the places where modifiers are available; note, however, that (text) *375:1
+                  in globbing qualifiers parameter substitution has already taken place, (text) *376:1
+                  so parameters in the replacement string should be quoted to ensure (text) *377:1
+                  they are replaced at the correct time\&. (text) *378:1.
+                  Note also that complicated patterns used in globbing qualifiers may (text) *379:1
+                  need the extended glob qualifier notation (text) *380:1
+                  \fB(#q:s/\fP\fI\&.\&.\&.\fP\fB/\fP\fI\&.\&.\&.\fP\fB/)\fP in order for the (text) *381:1
+                  shell to recognize the expression as a glob qualifier\&.  Further, (text) *382:1
+                  note that bad patterns in the substitution are not subject to (text) *383:1
+                  the \fBNO_BAD_PATTERN\fP option so will cause an error\&. (text) *384:1.
+            PP (block) *385:2
+              PP (head) 385:2
+              PP (body) 385:2
+                  When \fBHIST_SUBST_PATTERN\fP is set, \fIl\fP may start with a \fB#\fP (text) *386:1
+                  to indicate that the pattern must match at the start of the string (text) *387:1
+                  to be substituted, and a \fB%\fP may appear at the start or after an \fB#\fP (text) *388:1
+                  to indicate that the pattern must match at the end of the string (text) *389:1
+                  to be substituted\&.  The \fB%\fP or \fB#\fP may be quoted with two (text) *390:1
+                  backslashes\&. (text) *391:1.
+            PP (block) *392:2
+              PP (head) 392:2
+              PP (body) 392:2
+                  For example, the following piece of filename generation code (text) *393:1
+                  with the \fBEXTENDED_GLOB\fP option: (text) *394:1
+            PP (block) *395:2
+              PP (head) 395:2
+              PP (body) 395:2
+                  RS (block) *396:2
+                    RS (head) 396:2
+                    RS (body) 396:2
+                        nf (elem) *397:2
+                        \fBprint \-r \-\- *\&.c(#q:s/#%(#b)s(*)\&.c/\&'S${match[1]}\&.C'/)\fP (text) *398:1 NOFILL
+                        fi (elem) *399:2 NOFILL
+            PP (block) *401:2
+              PP (head) 401:2
+              PP (body) 401:2
+                  takes the expansion of \fB*\&.c\fP and applies the glob qualifiers in the (text) *402:1
+                  \fB(#q\fP\fI\&.\&.\&.\fP\fB)\fP expression, which consists of a substitution (text) *403:1
+                  modifier anchored to the start and end of each word (\fB#%\fP)\&.  This (text) *404:1
+                  turns on backreferences (\fB(#b)\fP), so that the parenthesised (text) *405:1
+                  subexpression is available in the replacement string as \fB${match[1]}\fP\&. (text) *406:1.
+                  The replacement string is quoted so that the parameter is not substituted (text) *407:1
+                  before the start of filename generation\&. (text) *408:1.
+            PP (block) *409:2
+              PP (head) 409:2
+              PP (body) 409:2
+                  The following \fBf\fP, \fBF\fP, \fBw\fP and \fBW\fP modifiers work only with (text) *410:1
+                  parameter expansion and filename generation\&.  They are listed here to (text) *411:1
+                  provide a single point of reference for all modifiers\&. (text) *412:1.
+            PP (block) *413:2
+              PP (head) 413:2
+              PP (body) 413:2
+                  PD (elem) *414:2
+                      0 (text) 414:5
+            TP (block) *415:2
+              TP (head) 415:2
+                  PD (elem) *416:2
+                  \fBf\fP (text) *417:1
+              TP (body) 417:1
+                  Repeats the immediately (without a colon) following modifier until the (text) *418:1
+                  resulting word doesn\&'t change any more\&. (text) *419:1.
+            TP (block) *420:2
+              TP (head) 420:2 ID=HREF=F:
+                  \fBF:\fP\fIexpr\fP\fB:\fP (text) *421:1
+              TP (body) 421:1
+                  Like \fBf\fP, but repeats only \fIn\fP times if the expression (text) *422:1
+                  \fIexpr\fP evaluates to \fIn\fP\&.  Any character can be used instead of (text) *423:1
+                  the `\fB:\fP\&'; if `\fB(\fP', `\fB[\fP', or `\fB{\fP' (text) *424:1
+                  is used as the opening delimiter, (text) *425:1
+                  the closing delimiter should be \&'\fB)\fP', `\fB]\fP', or `\fB}\fP', (text) *426:1
+                  respectively\&. (text) *427:1.
+            TP (block) *428:2
+              TP (head) 428:2 ID=HREF=w
+                  \fBw\fP (text) *429:1
+              TP (body) 429:1
+                  Makes the immediately following modifier work on each word in the (text) *430:1
+                  string\&. (text) *431:1.
+            TP (block) *432:2
+              TP (head) 432:2 ID=HREF=W:
+                  \fBW:\fP\fIsep\fP\fB:\fP (text) *433:1
+              TP (body) 433:1
+                  Like \fBw\fP but words are considered to be the parts of the string (text) *434:1
+                  that are separated by \fIsep\fP\&. Any character can be used instead of (text) *435:1
+                  the `\fB:\fP\&'; opening parentheses are handled specially, see above\&. (text) *436:1.

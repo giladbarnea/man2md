@@ -1,0 +1,436 @@
+.TH "ZSHEXPN" "1" "May 14, 2022" "zsh 5\&.9"
+.SH "NAME"
+zshexpn \- zsh expansion and substitution
+.\" Yodl file: Zsh/expn.yo
+.SH "DESCRIPTION"
+The following types of expansions are performed in the indicated order in
+five steps:
+.PP
+.PD 0
+.TP
+.PD
+\fIHistory Expansion\fP
+This is performed only in interactive shells\&.
+.TP
+\fIAlias Expansion\fP
+Aliases are expanded immediately before the command line is parsed as
+explained
+under Aliasing in \fIzshmisc\fP(1)\&.
+.TP
+.PD 0
+\fIProcess Substitution\fP
+.TP
+.PD 0
+\fIParameter Expansion\fP
+.TP
+.PD 0
+\fICommand Substitution\fP
+.TP
+.PD 0
+\fIArithmetic Expansion\fP
+.TP
+.PD
+\fIBrace Expansion\fP
+These five are performed in left\-to\-right fashion\&.  On each argument,
+any of the five steps that are needed are performed one after the other\&.
+Hence, for example, all the parts of parameter expansion are completed
+before command substitution is started\&.  After these expansions, all
+unquoted occurrences of the characters `\fB\e\fP\&',`\fB'\fP' and `\fB"\fP' are
+removed\&.
+.TP
+\fIFilename Expansion\fP
+If the \fBSH_FILE_EXPANSION\fP option is set, the order of expansion is
+modified for compatibility with \fBsh\fP and \fBksh\fP\&.  In that case
+\fIfilename expansion\fP is performed immediately after \fIalias expansion\fP,
+preceding the set of five expansions mentioned above\&.
+.TP
+\fIFilename Generation\fP
+This expansion, commonly referred to as \fBglobbing\fP, is always done last\&.
+.PP
+The following sections explain the types of expansion in detail\&.
+.PP
+.SH "HISTORY EXPANSION"
+History expansion allows you to use words from previous command
+lines in the command line you are typing\&.  This simplifies spelling
+corrections and the repetition of complicated commands or arguments\&.
+.PP
+Immediately before execution, each command is saved in the history list,
+the size of which is controlled by the \fBHISTSIZE\fP parameter\&.  The one
+most recent command is always retained in any case\&.  Each saved command in
+the history list is called a history \fIevent\fP and is assigned a number,
+beginning with 1 (one) when the shell starts up\&.  The history number that
+you may see in your prompt (see
+EXPANSION OF PROMPT SEQUENCES in \fIzshmisc\fP(1)) is the number that is to be assigned to the \fInext\fP command\&.
+.PP
+.SS "Overview"
+A history expansion begins with the first character of the \fBhistchars\fP
+parameter, which is `\fB!\fP\&' by default, and may occur anywhere on the
+command line, including inside double quotes (but not inside single quotes
+\fB\&'\&.\&.\&.'\fP or C\-style quotes \fB$'\&.\&.\&.'\fP nor when escaped with a backslash)\&.
+.PP
+The first character is followed by an optional event designator
+(see the section `Event Designators\&') and then an optional word
+designator (the section `Word Designators\&'); if neither of these designators is
+present, no history expansion occurs\&.
+.PP
+Input lines containing history expansions are echoed after being expanded,
+but before any other expansions take place and before the command is
+executed\&.  It is this expanded form that is recorded as the history event
+for later references\&.
+.PP
+History expansions do not nest\&.
+.PP
+By default, a history reference with no event designator refers to the
+same event as any preceding history reference on that command line; if it
+is the only history reference in a command, it refers to the previous
+command\&.
+However, if the option \fBCSH_JUNKIE_HISTORY\fP is set, then every history
+reference with no event specification \fIalways\fP refers to the previous
+command\&.
+.PP
+For example, `\fB!\fP\&' is the event designator for the previous command, so
+`\fB!!:1\fP\&' always refers to the first word of the previous command, and
+`\fB!!$\fP\&' always refers to the last word of the previous command\&.  With
+\fBCSH_JUNKIE_HISTORY\fP set, then `\fB!:1\fP\&' and `\fB!$\fP' function in the
+same manner as `\fB!!:1\fP\&' and `\fB!!$\fP', respectively\&.  Conversely, if
+\fBCSH_JUNKIE_HISTORY\fP is unset, then `\fB!:1\fP\&' and `\fB!$\fP' refer to the
+first and last words, respectively, of the same event referenced by the
+nearest other history reference preceding them on the current command
+line, or to the previous command if there is no preceding reference\&.
+.PP
+The character sequence `\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\&' (where `\fB^\fP' is
+actually the second character of the \fBhistchars\fP parameter)
+repeats the last command, replacing the string \fIfoo\fP with \fIbar\fP\&.
+More precisely, the sequence `\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\fB^\fP\&' is
+synonymous with `\fB!!:s\fP\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\fB^\fP\&', hence other
+modifiers (see the section `Modifiers\&') may follow the final `\fB^\fP'\&.
+In particular, `\fB^\fP\fIfoo\fP\fB^\fP\fIbar\fP\fB^:G\fP\&' performs a global
+substitution\&.
+.PP
+If the shell encounters the character sequence `\fB!"\fP\&'
+in the input, the history mechanism is temporarily disabled until
+the current list (see
+\fIzshmisc\fP(1)) is fully parsed\&.  The `\fB!"\fP\&' is removed from the input, and any
+subsequent `\fB!\fP\&' characters have no special significance\&.
+.PP
+A less convenient but more comprehensible form of command history support
+is provided by the \fBfc\fP builtin\&.
+.SS "Event Designators"
+An event designator is a reference to a command\-line entry in the history
+list\&.  In the list below, remember that the initial \fB`!\&'\fP in each item
+may be changed to another character by setting the \fBhistchars\fP
+parameter\&.
+.PP
+.PD 0
+.TP
+.PD
+\fB!\fP
+Start a history expansion, except when followed by a blank, newline,
+`\fB=\fP\&' or `\fB(\fP'\&.  If followed immediately by a word designator
+(see the section `Word Designators\&'), this forms a history reference
+with no event designator (see the section `Overview\&')\&.
+.TP
+\fB!!\fP
+Refer to the previous command\&.
+By itself, this expansion
+repeats the previous command\&.
+.TP
+\fB!\fP\fIn\fP
+Refer to command\-line \fIn\fP\&.
+.TP
+\fB!\-\fP\fIn\fP
+Refer to the current command\-line minus \fIn\fP\&.
+.TP
+\fB!\fP\fIstr\fP
+Refer to the most recent command starting with \fIstr\fP\&.
+.TP
+\fB!?\fP\fIstr\fP[\fB?\fP]
+Refer to the most recent command containing \fIstr\fP\&.  The trailing
+`\fB?\fP\&' is necessary if this reference is to be followed by a modifier or
+followed by any text that is not to be considered part of \fIstr\fP\&.
+.TP
+\fB!#\fP
+Refer to the current command line typed in so far\&.  The line is
+treated as if it were complete up to and including the word before the
+one with the `\fB!#\fP\&' reference\&.
+.TP
+\fB!{\fP\&.\&.\&.\fB}\fP
+Insulate a history reference from adjacent characters (if necessary)\&.
+.SS "Word Designators"
+A word designator indicates which word or words of a given command line are
+to be included in a history reference\&.  A `\fB:\fP\&' usually
+separates the event specification from the word designator\&.
+It may be omitted only if the word designator begins with a
+`\fB^\fP\&', `\fB$\fP', `\fB*\fP', `\fB\-\fP' or `\fB%\fP'\&.
+Word designators include:
+.PP
+.PD 0
+.TP
+\fB0\fP
+The first input word (command)\&.
+.TP
+\fIn\fP
+The \fIn\fPth argument\&.
+.TP
+\fB^\fP
+The first argument\&.  That is, \fB1\fP\&.
+.TP
+\fB$\fP
+The last argument\&.
+.TP
+\fB%\fP
+The word matched by (the most recent) \fB?\fP\fIstr\fP search\&.
+.TP
+\fIx\fP\fB\-\fP\fIy\fP
+A range of words; \fIx\fP defaults to \fB0\fP\&.
+.TP
+\fB*\fP
+All the arguments, or a null value if there are none\&.
+.TP
+\fIx\fP\fB*\fP
+Abbreviates `\fIx\fP\fB\-$\fP\&'\&.
+.TP
+\fIx\fP\fB\-\fP
+Like `\fIx\fP\fB*\fP\&' but omitting word \fB$\fP\&.
+.PD
+.PP
+Note that a `\fB%\fP\&' word designator works only when used in one of
+`\fB!%\fP\&', `\fB!:%\fP' or `\fB!?\fP\fIstr\fP\fB?:%\fP', and only when used after a
+\fB!?\fP expansion (possibly in an earlier command)\&.  Anything else results
+in an error, although the error may not be the most obvious one\&.
+.SS "Modifiers"
+After the optional word designator, you can add
+a sequence of one or more of the following modifiers,
+each preceded by a `\fB:\fP\&'\&.  These modifiers also work on the result
+of \fIfilename generation\fP and \fIparameter expansion\fP, except where
+noted\&.
+.PP
+.PD 0
+.TP
+.PD
+\fBa\fP
+Turn a file name into an absolute path:  prepends the current directory,
+if necessary; remove `\fB\&.\fP\&' path segments; and remove `\fB\&.\&.\fP' path segments
+and the segments that immediately precede them\&.
+.RS
+.PP
+This transformation is agnostic about what is in the filesystem, i\&.e\&. is
+on the logical, not the physical directory\&.  It takes place in the same
+manner as when changing directories when neither of the options
+\fBCHASE_DOTS\fP or \fBCHASE_LINKS\fP is set\&.  For example,
+`\fB/before/here/\&.\&./after\fP\&' is always transformed to
+`\fB/before/after\fP\&', regardless of whether `\fB/before/here\fP' exists or what
+kind of object (dir, file, symlink, etc\&.) it is\&.
+.RE
+.TP
+\fBA\fP
+Turn a file name into an absolute path as the `\fBa\fP\&' modifier does, and
+\fIthen\fP pass the result through the \fBrealpath(3)\fP library
+function to resolve symbolic links\&.
+.RS
+.PP
+Note: on systems that do not have a \fBrealpath(3)\fP library
+function, symbolic links are not resolved, so on those systems `\fBa\fP\&' and
+`\fBA\fP\&' are equivalent\&.
+.PP
+Note: \fBfoo:A\fP and \fBrealpath(foo)\fP are different on some inputs\&.
+For \fBrealpath(foo)\fP semantics, see the `\fBP\fP` modifier\&.
+.RE
+.TP
+\fBc\fP
+Resolve a command name into an absolute path by searching the command
+path given by the \fBPATH\fP variable\&.  This does not work for commands
+containing directory parts\&.  Note also that this does not usually work as
+a glob qualifier unless a file of the same name is found in the
+current directory\&.
+.TP
+\fBe\fP
+Remove all but the part of the filename extension following the `\fB\&.\fP\&';
+see the definition of the filename extension in the description of the
+\fBr\fP modifier below\&.  Note that according to that definition the result
+will be empty if the string ends with a `\fB\&.\fP\&'\&.
+.TP
+\fBh\fP [ \fIdigits\fP ]
+Remove a trailing pathname component, shortening the path by one
+directory level: this is the `head\&' of the pathname\&.  This works like
+`\fBdirname\fP\&'\&.  If the \fBh\fP is followed immediately (with no spaces or
+other separator) by any number of decimal digits, and the value of the
+resulting number is non\-zero, that number of leading components is
+preserved instead of the final component being removed\&.  In an
+absolute path the leading `\fB/\fP\&' is the first component, so,
+for example, if \fBvar=/my/path/to/something\fP, then \fB${var:h3}\fP
+substitutes \fB/my/path\fP\&.  Consecutive `/\&'s are treated the same as
+a single `/\&'\&.  In parameter substitution, digits may only be
+used if the expression is in braces, so for example the short form
+substitution \fB$var:h2\fP is treated as \fB${var:h}2\fP, not as
+\fB${var:h2}\fP\&.  No restriction applies to the use of digits in history
+substitution or globbing qualifiers\&.  If more components are requested
+than are present, the entire path is substituted (so this does not
+trigger a `failed modifier\&' error in history expansion)\&.
+.TP
+\fBl\fP
+Convert the words to all lowercase\&.
+.TP
+\fBp\fP
+Print the new command but do not execute it\&.  Only works with history
+expansion\&.
+.TP
+\fBP\fP
+Turn a file name into an absolute path, like \fBrealpath(3)\fP\&.
+The resulting path will be absolute,
+will refer to the same directory entry as the input filename,
+and none of its components will be symbolic links or equal to
+`\fB\&.\fP\&' or `\fB\&.\&.\fP'\&.
+.RS
+.PP
+Unlike \fBrealpath(3)\fP, non\-existent trailing components are
+permitted and preserved\&.
+.RE
+.TP
+\fBq\fP
+Quote the substituted words, escaping further substitutions\&.  Works
+with history expansion and parameter expansion, though for parameters
+it is only useful if the resulting text is to be re\-evaluated such as
+by \fBeval\fP\&.
+.TP
+\fBQ\fP
+Remove one level of quotes from the substituted words\&.
+.TP
+\fBr\fP
+Remove a filename extension leaving the root name\&.  Strings with no
+filename extension are not altered\&.  A filename
+extension is a `\fB\&.\fP\&' followed by any number of characters (including
+zero) that are neither `\fB\&.\fP\&' nor `\fB/\fP' and that continue to the end
+of the string\&.  For example, the extension of
+`\fBfoo\&.orig\&.c\fP\&' is `\fB\&.c\fP', and `\fBdir\&.c/foo\fP' has no extension\&.
+.TP
+\fBs/\fP\fIl\fP\fB/\fP\fIr\fP[\fB/\fP]
+Substitute \fIr\fP for \fIl\fP as described below\&.
+The substitution is done only for the
+first string that matches \fIl\fP\&.  For arrays and for filename
+generation, this applies to each word of the expanded text\&.  See
+below for further notes on substitutions\&.
+.RS
+.PP
+The forms `\fBgs/\fP\fIl\fP\fB/\fP\fIr\fP\&' and `\fBs/\fP\fIl\fP\fB/\fP\fIr\fP\fB/:G\fP'
+perform global substitution, i\&.e\&. substitute every occurrence of \fIr\fP
+for \fIl\fP\&.  Note that the \fBg\fP or \fB:G\fP must appear in exactly the
+position shown\&.
+.PP
+See further notes on this form of substitution below\&.
+.RE
+.TP
+\fB&\fP
+Repeat the previous \fBs\fP substitution\&.  Like \fBs\fP, may be preceded
+immediately by a \fBg\fP\&.  In parameter expansion the \fB&\fP must appear
+inside braces, and in filename generation it must be quoted with a
+backslash\&.
+.TP
+\fBt\fP [ \fIdigits\fP ]
+Remove all leading pathname components, leaving the final component (tail)\&.
+This works like `\fBbasename\fP\&'\&.  Any trailing slashes are first removed\&.
+Decimal digits are handled as described above for (h), but in this
+case that number of trailing components is preserved instead of
+the default 1; 0 is treated the same as 1\&.
+.TP
+\fBu\fP
+Convert the words to all uppercase\&.
+.TP
+\fBx\fP
+Like \fBq\fP, but break into words at whitespace\&.  Does not work with
+parameter expansion\&.
+.PP
+The \fBs/\fP\fIl\fP\fB/\fP\fIr\fP\fB/\fP substitution works as follows\&.  By
+default the left\-hand side of substitutions are not patterns, but
+character strings\&.  Any character can be used as the delimiter in place
+of `\fB/\fP\&'\&.  A backslash quotes the delimiter character\&.  The character
+`\fB&\fP\&', in the right\-hand\-side \fIr\fP, is replaced by the text from the
+left\-hand\-side \fIl\fP\&.  The `\fB&\fP\&' can be quoted with a backslash\&.  A
+null \fIl\fP uses the previous string either from the previous \fIl\fP or
+from the contextual scan string \fIs\fP from `\fB!?\fP\fIs\fP\&'\&.  You can
+omit the rightmost delimiter if a newline immediately follows \fIr\fP;
+the rightmost `\fB?\fP\&' in a context scan can similarly be omitted\&.  Note
+the same record of the last \fIl\fP and \fIr\fP is maintained across all
+forms of expansion\&.
+.PP
+Note that if a `\fB&\fP\&' is used within glob qualifiers an extra backslash
+is needed as a \fB&\fP is a special character in this case\&.
+.PP
+Also note that the order of expansions affects the interpretation of
+\fIl\fP and \fIr\fP\&.  When used in a history expansion, which occurs before
+any other expansions, \fIl\fP and \fIr\fP are treated as literal strings
+(except as explained for \fBHIST_SUBST_PATTERN\fP below)\&.  When used in
+parameter expansion, the replacement of \fIr\fP into the parameter\&'s value
+is done first, and then any additional process, parameter, command,
+arithmetic, or brace references are applied, which may evaluate those
+substitutions and expansions more than once if \fIl\fP appears more than
+once in the starting value\&.  When used in a glob qualifier, any
+substitutions or expansions are performed once at the time the qualifier
+is parsed, even before the `\fB:s\fP\&' expression itself is divided into
+\fIl\fP and \fIr\fP sides\&.
+.PP
+If the option \fBHIST_SUBST_PATTERN\fP is set, \fIl\fP is treated as
+a pattern of the usual form described in
+the section FILENAME GENERATION below\&.  This can be used in
+all the places where modifiers are available; note, however, that
+in globbing qualifiers parameter substitution has already taken place,
+so parameters in the replacement string should be quoted to ensure
+they are replaced at the correct time\&.
+Note also that complicated patterns used in globbing qualifiers may
+need the extended glob qualifier notation
+\fB(#q:s/\fP\fI\&.\&.\&.\fP\fB/\fP\fI\&.\&.\&.\fP\fB/)\fP in order for the
+shell to recognize the expression as a glob qualifier\&.  Further,
+note that bad patterns in the substitution are not subject to
+the \fBNO_BAD_PATTERN\fP option so will cause an error\&.
+.PP
+When \fBHIST_SUBST_PATTERN\fP is set, \fIl\fP may start with a \fB#\fP
+to indicate that the pattern must match at the start of the string
+to be substituted, and a \fB%\fP may appear at the start or after an \fB#\fP
+to indicate that the pattern must match at the end of the string
+to be substituted\&.  The \fB%\fP or \fB#\fP may be quoted with two
+backslashes\&.
+.PP
+For example, the following piece of filename generation code
+with the \fBEXTENDED_GLOB\fP option:
+.PP
+.RS
+.nf
+\fBprint \-r \-\- *\&.c(#q:s/#%(#b)s(*)\&.c/\&'S${match[1]}\&.C'/)\fP
+.fi
+.RE
+.PP
+takes the expansion of \fB*\&.c\fP and applies the glob qualifiers in the
+\fB(#q\fP\fI\&.\&.\&.\fP\fB)\fP expression, which consists of a substitution
+modifier anchored to the start and end of each word (\fB#%\fP)\&.  This
+turns on backreferences (\fB(#b)\fP), so that the parenthesised
+subexpression is available in the replacement string as \fB${match[1]}\fP\&.
+The replacement string is quoted so that the parameter is not substituted
+before the start of filename generation\&.
+.PP
+The following \fBf\fP, \fBF\fP, \fBw\fP and \fBW\fP modifiers work only with
+parameter expansion and filename generation\&.  They are listed here to
+provide a single point of reference for all modifiers\&.
+.PP
+.PD 0
+.TP
+.PD
+\fBf\fP
+Repeats the immediately (without a colon) following modifier until the
+resulting word doesn\&'t change any more\&.
+.TP
+\fBF:\fP\fIexpr\fP\fB:\fP
+Like \fBf\fP, but repeats only \fIn\fP times if the expression
+\fIexpr\fP evaluates to \fIn\fP\&.  Any character can be used instead of
+the `\fB:\fP\&'; if `\fB(\fP', `\fB[\fP', or `\fB{\fP'
+is used as the opening delimiter,
+the closing delimiter should be \&'\fB)\fP', `\fB]\fP', or `\fB}\fP',
+respectively\&.
+.TP
+\fBw\fP
+Makes the immediately following modifier work on each word in the
+string\&.
+.TP
+\fBW:\fP\fIsep\fP\fB:\fP
+Like \fBw\fP but words are considered to be the parts of the string
+that are separated by \fIsep\fP\&. Any character can be used instead of
+the `\fB:\fP\&'; opening parentheses are handled specially, see above\&.
