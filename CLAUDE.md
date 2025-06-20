@@ -24,9 +24,9 @@ Your task is to implement the `man2md` tool autonomously.
 - [x] Implement the tool in @man2md.py. It takes a raw man page path as input (like tests/zshexpn/zshexpn-raw.txt), converts it to markdown, and prints the result to stdout.
 
 ## Current task (fsck_hfs test suite)
-- [ ] Read the tests/fsck_hfs/*.txt files to get a sense of what you have to work with.
-- [ ] Manually (hard-code) write a tests/fsck_hfs/fsck_hfs.md, based on fsck_hfs.txt. This will be your source of truth. This file is the output of `man2md` on the input file tests/fsck_hfs/fsck_hfs_raw.txt. ATTENTION: This file must be consistent with tests/zshexpn/zshexpn.md. By consistent, I mean that the conversion of fsck_hfs_raw.txt to fsck_hfs.md must be consistent with the conversion of zshexpn-raw.txt to zshexpn.md. This is crucial, because otherwise, the project will end up with two "types" of source of truth, which will make it impossible to test the tool.
-- [ ] Only after you are confident that the conversions are consistent, test the existing tool with fsck_hfs and fix any issues that arise.
+- [x] Read the tests/fsck_hfs/*.txt files to get a sense of what you have to work with.
+- [x] Manually (hard-code) write a tests/fsck_hfs/fsck_hfs.md, based on fsck_hfs.txt. This will be your source of truth. This file is the output of `man2md` on the input file tests/fsck_hfs/fsck_hfs_raw.txt. ATTENTION: This file must be consistent with tests/zshexpn/zshexpn.md. By consistent, I mean that the conversion of fsck_hfs_raw.txt to fsck_hfs.md must be consistent with the conversion of zshexpn-raw.txt to zshexpn.md. This is crucial, because otherwise, the project will end up with two "types" of source of truth, which will make it impossible to test the tool.
+- [x] Only after you are confident that the conversions are consistent, test the existing tool with fsck_hfs and fix any issues that arise.
 
 # Rules
 1. You must work in TDD. You must work in a think-fix-test cycle.
