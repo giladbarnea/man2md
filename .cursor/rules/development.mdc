@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Dev Cycle
+1. This is a Mac.
+2. You are using Python 3.12.
+3. The package manager is `uv`.
+4. Run Python with `uv run python [python arguments and options...]`.
+5. Run tests with `uv run pytest [pytest arguments and options...]` (pytest is already installed.)
+6. Try to avoid installing any packages or tools, but if you have to, do it with `uv add ...`.
+7. Never use any other means to install packages or tools: not pip, not brew, not npm; only `uv add ...`.
+8. Use the terminal's coreutils as you need them. cat, grep, sed, awk, redirect output/input to /tmp, etc.

@@ -34,12 +34,4 @@ Your task is to implement the `man2md` tool autonomously.
 3. Work iteratively.
 4. Complimentary to point 3, always work on small chunks of the problem; literally, work on the first H1 section first; once you get it right, move on to the next H1 section, and work only on its first paragraph or first few paragraphs; etc. This is to avoid trying to solve the whole problem at once and comparing the result to the entire source of truth.
 
-# Dev Cycle
-1. This is a Mac.
-2. You are using Python 3.12.
-3. The package manager is `uv`.
-4. Run Python with `uv run python [python arguments and options...]`.
-5. Run tests with `uv run pytest [pytest arguments and options...]`.
-6. Try to avoid installing any packages or tools, but if you have to, do it with `uv add ...`.
-7. Never use any other means to install packages or tools: not pip, not brew, not npm; only `uv add ...`.
-8. Use the terminal's coreutils as you need them. cat, grep, sed, awk, redirect output/input to /tmp, etc.
+@.cursor/rules/development.mdc

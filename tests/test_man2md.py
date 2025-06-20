@@ -1,7 +1,5 @@
-import pytest
 import subprocess
 import sys
-from pathlib import Path
 
 def test_man2md_basic_structure():
     """Test that man2md produces basic markdown structure"""
