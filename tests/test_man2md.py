@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-def test_man2md_basic_structure():
+def test_zshexpn_basic_structure():
     """Test that man2md produces basic markdown structure"""
     result = subprocess.run([
         sys.executable, 'man2md.py', 
@@ -17,7 +17,7 @@ def test_man2md_basic_structure():
     assert '## DESCRIPTION' in output
     assert '## HISTORY EXPANSION' in output
 
-def test_man2md_name_section():
+def test_zshexpn_name_section():
     """Test NAME section conversion"""
     result = subprocess.run([
         sys.executable, 'man2md.py', 
@@ -30,7 +30,7 @@ def test_man2md_name_section():
     # Check NAME section content
     assert 'zshexpn - zsh expansion and substitution' in output
 
-def test_man2md_description_section():
+def test_zshexpn_description_section():
     """Test DESCRIPTION section conversion"""
     result = subprocess.run([
         sys.executable, 'man2md.py', 
