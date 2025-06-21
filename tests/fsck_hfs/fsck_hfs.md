@@ -112,3 +112,9 @@ A major error was found with `-E`.
 `fsck(8)`
 
 ## BUGS
+
+`fsck_hfs` is not able to fix some inconsistencies that it detects.
+
+## HISTORY
+
+The `fsck_hfs` command appeared in Mac OS X Server 1.0 .

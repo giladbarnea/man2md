@@ -1,0 +1,128 @@
+# GIT-DIFF(1)
+
+## NAME
+
+git-diff - Show changes between commits, commit and working tree, etc
+
+## SYNOPSIS
+
+`git diff [<options>] [<commit>] [--] [<path>...]`
+`git diff [<options>] --cached [--merge-base] [<commit>] [--] [<path>...]`
+`git diff [<options>] [--merge-base] <commit> [<commit>...] <commit> [--] [<path>...]`
+`git diff [<options>] <commit>...<commit> [--] [<path>...]`
+`git diff [<options>] <blob> <blob>`
+`git diff [<options>] --no-index [--] <path> <path>`
+
+## DESCRIPTION
+
+Show changes between the working tree and the index or a tree, changes between the index and a tree, changes between two trees, changes resulting from a merge, changes between two blob objects, or changes between two files on disk.
+
+`git diff [<options>] [--] [<path>...]`
+This form is to view the changes you made relative to the index (staging area for the next commit). In other words, the differences are what you could tell Git to further add to the index but you still haven't. You can stage these changes by using `git-add(1)`.
+
+## OPTIONS
+
+**`-p, -u, --patch`**
+Generate patch (see section on generating patches). This is the default.
+
+**`-s, --no-patch`**
+Suppress diff output. Useful for commands like `git show` that show the patch by default, or to cancel the effect of `--patch`.
+
+**`-U<n>, --unified=<n>`**
+Generate diffs with `<n>` lines of context instead of the usual three. Implies `--patch`.
+
+**`--anchored=<text>`**
+Generate a diff using the "anchored diff" algorithm.
+
+This option may be specified more than once.
+
+If a line exists in both the source and destination, exists only once, and starts with this text, this algorithm attempts to prevent it from appearing as a deletion or addition in the output. It uses the "patience diff" algorithm internally.
+
+**`--diff-algorithm={patience|minimal|histogram|myers}`**
+Choose a diff algorithm. The variants are as follows:
+
+**default, myers**
+The basic greedy diff algorithm. Currently, this is the default.
+
+**minimal**
+Spend extra time to make sure the smallest possible diff is produced.
+
+**patience**
+Use "patience diff" algorithm when generating patches.
+
+**histogram**
+This algorithm extends the patience algorithm to "support low-occurrence common elements".
+
+For instance, if you configured the diff.algorithm variable to a non-default value and want to use the default one, then you have to use `--diff-algorithm=default` option.
+
+**`--stat[=<width>[,<name-width>[,<count>]]]`**
+Generate a diffstat. By default, as much space as necessary will be used for the filename part, and the rest for the graph part. Maximum width defaults to terminal width, or 80 columns if not connected to a terminal, and can be overridden by `<width>`. The width of the filename part can be limited by giving another width `<name-width>` after a comma. The width of the graph part can be limited by using `--stat-graph-width=<width>` (affects all commands generating a stat graph) or by setting `diff.statGraphWidth=<width>` (does not affect `git format-patch`). By giving a third parameter `<count>`, you can limit the output to the first `<count>` lines, followed by ... if there are more.
+
+These parameters can also be set individually with `--stat-width=<width>`, `--stat-name-width=<name-width>` and `--stat-count=<count>`.
+
+**`-G<regex>`**
+Look for differences whose patch text contains added/removed lines that match `<regex>`.
+
+To illustrate the difference between `-S<regex> --pickaxe-regex` and `-G<regex>`, consider a commit with the following diff in the same file:
+
+    +    return frotz(nitfol, two->ptr, 1, 0);
+    ...
+    -    hit = frotz(nitfol, mf2.ptr, 1, 0);
+
+While `git log -G"frotz\(nitfol"` will show this commit, `git log -S"frotz\(nitfol" --pickaxe-regex` will not (because the number of occurrences of that string did not change).
+
+Unless `--text` is supplied patches of binary files without a textconv filter will be ignored.
+
+See the pickaxe entry in `gitdiffcore(7)` for more information.
+
+**`-O<orderfile>`**
+Control the order in which files appear in the output. This overrides the `diff.orderFile` configuration variable (see `git-config(1)`). To cancel `diff.orderFile`, use `-O/dev/null`.
+
+`<orderfile>` is parsed as follows:
+
+• Blank lines are ignored, so they can be used as separators for readability.
+
+• Lines starting with a hash ("#") are ignored, so they can be used for comments. Add a backslash ("\") to the beginning of the pattern if it starts with a hash.
+
+• Each other line contains a single pattern.
+
+## RAW OUTPUT FORMAT
+
+The raw output format from "`git-diff-index`", "`git-diff-tree`", "`git-diff-files`" and `git diff --raw` are very similar.
+
+An output line is formatted this way:
+
+    in-place edit  :100644 100644 bcd1234 0123456 M file0
+    copy-edit      :100644 100644 abcd123 1234567 C68 file1 file2
+    rename-edit    :100644 100644 abcd123 1234567 R86 file1 file3
+    create         :000000 100644 0000000 1234567 A file4
+    delete         :100644 000000 1234567 0000000 D file5
+    unmerged       :000000 000000 0000000 0000000 U file6
+
+1. a colon.
+
+2. mode for "src"; 000000 if creation or unmerged.
+
+3. a space.
+
+4. mode for "dst"; 000000 if deletion or unmerged.
+
+5. a space.
+
+6. sha1 for "src"; 0{40} if creation or unmerged.
+
+7. a space.
+
+8. sha1 for "dst"; 0{40} if deletion, unmerged or "work tree out of sync with the index".
+
+9. a space.
+
+## GENERATING PATCH TEXT WITH -P
+
+What the `-p` option produces is slightly different from the traditional diff format:
+
+1. It is preceded with a "git diff" header that looks like this:
+
+    diff --git a/file1 b/file2
+
+The a/ and b/ filenames are the same. 
