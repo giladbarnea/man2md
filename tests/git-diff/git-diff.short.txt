@@ -53,62 +53,38 @@ OPTIONS
 	   For instance, if you configured the diff.algorithm variable to a non-default value and want to use the default one, then you have to use --diff-algorithm=default option.
 
        --stat[=<width>[,<name-width>[,<count>]]]
-	   Generate a diffstat. By default, as much space as necessary will be
-	   used for the filename part, and the rest for the graph part.
-	   Maximum width defaults to terminal width, or 80 columns if not
-	   connected to a terminal, and can be overridden by <width>. The
-	   width of the filename part can be limited by giving another width
-	   <name-width> after a comma. The width of the graph part can be
-	   limited by using --stat-graph-width=<width> (affects all commands
-	   generating a stat graph) or by setting diff.statGraphWidth=<width>
-	   (does not affect git format-patch). By giving a third parameter
-	   <count>, you can limit the output to the first <count> lines,
-	   followed by ... if there are more.
+	   Generate a diffstat. By default, as much space as necessary will be used for the filename part, and the rest for the graph part. Maximum width defaults to terminal width, or 80 columns if not connected to a terminal, and can be overridden by <width>. The width of the filename part can be limited by giving another width <name-width> after a comma. The width of the graph part can be limited by using --stat-graph-width=<width> (affects all commands generating a stat graph) or by setting diff.statGraphWidth=<width> (does not affect git format-patch). By giving a third parameter <count>, you can limit the output to the first <count> lines, followed by ... if there are more.
 
-	   These parameters can also be set individually with
-	   --stat-width=<width>, --stat-name-width=<name-width> and
-	   --stat-count=<count>.
+	   These parameters can also be set individually with --stat-width=<width>, --stat-name-width=<name-width> and --stat-count=<count>.
 
        -G<regex>
-	   Look for differences whose patch text contains added/removed lines
-	   that match <regex>.
+	   Look for differences whose patch text contains added/removed lines that match <regex>.
 
-	   To illustrate the difference between -S<regex> --pickaxe-regex and
-	   -G<regex>, consider a commit with the following diff in the same
-	   file:
+	   To illustrate the difference between -S<regex> --pickaxe-regex and -G<regex>, consider a commit with the following diff in the same file:
 
 	       +    return frotz(nitfol, two->ptr, 1, 0);
 	       ...
 	       -    hit = frotz(nitfol, mf2.ptr, 1, 0);
 
-	   While git log -G"frotz\(nitfol" will show this commit, git log
-	   -S"frotz\(nitfol" --pickaxe-regex will not (because the number of
-	   occurrences of that string did not change).
+	   While git log -G"frotz\(nitfol" will show this commit, git log -S"frotz\(nitfol" --pickaxe-regex will not (because the number of occurrences of that string did not change).
 
-	   Unless --text is supplied patches of binary files without a
-	   textconv filter will be ignored.
+	   Unless --text is supplied patches of binary files without a textconv filter will be ignored.
 
 	   See the pickaxe entry in gitdiffcore(7) for more information.
 
        -O<orderfile>
-	   Control the order in which files appear in the output. This
-	   overrides the diff.orderFile configuration variable (see git-
-	   config(1)). To cancel diff.orderFile, use -O/dev/null.
+	   Control the order in which files appear in the output. This overrides the diff.orderFile configuration variable (see git-config(1)). To cancel diff.orderFile, use -O/dev/null.
 
 	   <orderfile> is parsed as follows:
 
-	   •   Blank lines are ignored, so they can be used as separators for
-	       readability.
+	   •   Blank lines are ignored, so they can be used as separators for readability.
 
-	   •   Lines starting with a hash ("#") are ignored, so they can be
-	       used for comments. Add a backslash ("\") to the beginning of
-	       the pattern if it starts with a hash.
+	   •   Lines starting with a hash ("#") are ignored, so they can be used for comments. Add a backslash ("\") to the beginning of the pattern if it starts with a hash.
 
 	   •   Each other line contains a single pattern.
 	   
 RAW OUTPUT FORMAT
-		The raw output format from "git-diff-index", "git-diff-tree",
-		"git-diff-files" and "git diff --raw" are very similar.
+		The raw output format from "git-diff-index", "git-diff-tree", "git-diff-files" and "git diff --raw" are very similar.
 		
 		An output line is formatted this way:
 
